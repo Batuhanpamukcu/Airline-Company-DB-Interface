@@ -1,0 +1,63 @@
+create trigger plane_added_increase_number_of_plane
+on Airplane
+after insert
+as
+declare @airplane_id int
+declare @company_id int
+declare @passenger_capacity int
+declare @airplane_name varchar(50)
+select @airplane_id = airplane_id, @company_id = company_id, @passenger_capacity = passenger_capacity,
+@airplane_name = airplane_name from inserted
+update Company set number_of_plane = number_of_plane + 1 where
+Company.company_id = @company_id;
+
+create trigger plane_deleted_decrease_number_of_plane
+on Airplane
+after delete
+as
+declare @airplane_id int
+declare @company_id int
+declare @passenger_capacity int
+declare @airplane_name varchar(50)
+select @airplane_id = airplane_id, @company_id = company_id, @passenger_capacity = passenger_capacity,
+@airplane_name = airplane_name from deleted
+update Company set number_of_plane = number_of_plane - 1 where
+Company.company_id = @company_id; 
+
+create trigger if_baggage_is_added_ticket_price_will_increase
+on Baggage
+after insert
+as
+declare @passenger_id int
+declare @weight_in_kg int
+declare @check_date varchar(50)
+select @passenger_id = passenger_id, @weight_in_kg = weight_in_kg, @check_date = check_date from
+inserted
+update Booking set ticket_price = ticket_price + 400 where Booking.passenger_id = @passenger_id;
+
+create trigger if_baggage_is_deleted_ticket_price_will_decrease
+on Baggage
+after delete
+as
+declare @passenger_id int
+declare @weight_in_kg int
+declare @check_date varchar(50)
+select @passenger_id = passenger_id, @weight_in_kg = weight_in_kg, @check_date = check_date from
+deleted
+update Booking set ticket_price = ticket_price - 400 where Booking.passenger_id = @passenger_id;
+
+create trigger when_payment_method_is_cash_add_coupon
+on Payment
+after insert
+as
+declare @payment_id int
+declare @passenger_id int
+declare @payment_method varchar(50)
+declare @payment_date varchar(50)
+declare @ticket_price varchar(50)
+select @payment_id = payment_id, @passenger_id = passenger_id, @payment_method = payment_method,
+@payment_date = payment_date, @ticket_price = ticket_price from inserted;
+if (@payment_method = 'CASH')
+begin
+update Ticket set coupon = 50;
+end;
