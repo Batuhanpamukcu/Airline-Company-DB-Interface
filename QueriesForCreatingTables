@@ -1,0 +1,92 @@
+create table Passenger
+(
+   passenger_id int primary key not null,
+   passenger_name varchar(50) not null,
+   gender varchar(50) not null,
+   date_of_birth varchar(50) not null,
+   country_of_citizenship varchar(50) not null,
+   passport_no varchar(50),
+);
+
+create table Company
+(
+   company_id int primary key not null,
+   company_name varchar(50) not null
+);
+
+create table Airplane
+(
+   airplane_id int primary key not null,
+   company_id int not null,
+   constraint fk_company_id foreign key (company_id)
+   references Company(company_id),
+   passenger_capacity int not null,
+   airplane_name varchar(50) not null,
+);
+
+create table Flight
+(
+   flight_id int primary key not null,
+   departure_date varchar(50) not null,
+   arrival_date varchar(50) not null,
+   departure_airport_name varchar(50) not null,
+   arrival_airport_name varchar(50) not null,
+   airplane_name varchar(50) not null
+   references Airplane(airplane_name),
+);
+
+create table Airport
+(
+   airport_id int primary key not null,
+   airport_name varchar(50) not null,
+   country varchar(50) not null,
+   city varchar(50) not null,
+   flight_capacity varchar(50),
+);
+
+create table Booking
+(
+    booking_id int primary key not null,
+    passenger_id int not null,
+    constraint fk_passenger_id foreign key (passenger_id)
+    references Passenger(passenger_id),
+    booking_platform varchar(50) not null,
+    seat_class varchar(50) not null,
+    ticket_price float unique not null,
+    company_id int not null,
+    constraint fk_company_id_booking foreign key (company_id)
+    references Company(company_id),
+ );
+ 
+create table Payment
+(
+   payment_id int primary key not null,
+   passenger_id int not null,
+   constraint fk_passenger_id_payment foreign key (passenger_id)
+   references Passenger(passenger_id),
+   payment_method varchar(50) not null,
+   payment_date varchar(50) not null,
+   ticket_price float not null
+   references Booking(ticket_price),
+);
+
+create table Ticket
+(
+   ticket_id int primary key not null,
+   passenger_id int not null,
+   constraint fk_passenger_id_ticket foreign key (passenger_id)
+   references Passenger(passenger_id),
+   flight_id int not null,
+   constraint fk_flight_id_ticket foreign key (flight_id)
+   references Flight(flight_id),
+   seat_no varchar(50) not null,
+);
+
+create table Baggage
+(
+   passenger_id int not null,
+   constraint fk_passenger_id_baggage foreign key (passenger_id)
+   references Passenger(passenger_id),
+   weight_in_kg varchar(50),
+   check_date varchar(50),
+); 
