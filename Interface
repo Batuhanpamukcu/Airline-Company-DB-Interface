@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace DBPROJECT
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        SqlConnection baglantı = new SqlConnection("Data Source=DESKTOP-1OP5M13;Initial Catalog=CSE414airline;Integrated Security=True");
+
+        private void showData(string veriler)
+        {
+            SqlDataAdapter da = new SqlDataAdapter(veriler, baglantı);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView1.DataSource = ds.Tables[0];
+            
+        }
+
+        private void showData1(string veriler)
+        {
+            SqlDataAdapter da = new SqlDataAdapter(veriler, baglantı);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            dataGridView2.DataSource = ds.Tables[0];
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            showData("select * from Passenger");
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            baglantı.Open();
+            SqlCommand komut = new SqlCommand("insert into Passenger (passenger_id, passenger_name, gender, date_of_birth, country_of_citizenship, passport_no)values (@passenger_ids, @passenger_names, @genders, @date_of_births, @country_of_citizenships, @passport_nos)", baglantı);
+            komut.Parameters.AddWithValue("@passenger_ids", textBox1.Text);
+            komut.Parameters.AddWithValue("@passenger_names", textBox2.Text);
+            komut.Parameters.AddWithValue("@genders", textBox3.Text);
+            komut.Parameters.AddWithValue("@date_of_births", textBox4.Text);
+            komut.Parameters.AddWithValue("@country_of_citizenships", textBox5.Text);
+            komut.Parameters.AddWithValue("@passport_nos", textBox6.Text);
+            komut.ExecuteNonQuery();
+            baglantı.Close();
+            textBox1.Clear();
+            textBox2.Clear();
+            textBox3.Clear();
+            textBox4.Clear();
+            textBox5.Clear();
+            textBox6.Clear();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            baglantı.Open();
+            SqlCommand komut = new SqlCommand("delete from Passenger where passenger_id = @passenger_ids", baglantı);
+            komut.Parameters.AddWithValue("@passenger_ids", textBox7.Text);
+            komut.ExecuteNonQuery();
+            baglantı.Close();
+            textBox7.Clear();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            baglantı.Open();
+            SqlCommand komut = new SqlCommand("insert into Booking (booking_id, passenger_id, booking_platform, seat_class, ticket_price, company_id)values (@booking_ids, @passenger_ids, @booking_platforms, @seat_classs, @ticket_prices, @company_ids)", baglantı);
+            komut.Parameters.AddWithValue("@booking_ids", textBox8.Text);
+            komut.Parameters.AddWithValue("@passenger_ids", textBox9.Text);
+            komut.Parameters.AddWithValue("@booking_platforms", comboBox1.Text);
+            komut.Parameters.AddWithValue("@seat_classs", comboBox2.Text);
+            komut.Parameters.AddWithValue("@ticket_prices", comboBox3.Text);
+            komut.Parameters.AddWithValue("@company_ids", comboBox4.Text);
+            komut.ExecuteNonQuery();
+            showData1("select * from Booking");
+            baglantı.Close();
+            textBox8.Clear();
+            textBox9.Clear();
+        }
+    }
+}
