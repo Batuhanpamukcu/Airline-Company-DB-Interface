@@ -1,0 +1,45 @@
+create view baggage_of_passanger
+as
+select distinct Passenger.passenger_id, Passenger.passenger_name, Baggage.weight_in_kg, Baggage.check_date
+from Passenger
+inner join Baggage
+on
+Passenger.passenger_id = Baggage.passenger_id;
+
+create view airplanes_of_company
+as
+select distinct Company.company_id, Company.company_name, Airplane.airplane_name,
+Airplane.passenger_capacity
+from Company
+inner join Airplane
+on
+Company.company_id= Airplane.company_id;
+
+create view information_of_passenger_ticket_and_flight
+as
+select distinct Passenger.passenger_id, Passenger.passenger_name, Ticket.ticket_id,
+Flight.departure_airport_name,
+Flight.arrival_airport_name, Flight.departure_date, Flight.arrival_date, Flight.airplane_name
+from Passenger
+inner join Ticket
+on
+Passenger.passenger_id = Ticket.passenger_id
+inner join Flight
+on
+Ticket.flight_id = Flight.flight_id;
+inner join Airplane
+on
+Flight.airplane_name = Airplane.airplane_name;
+
+create view rezervation_information
+as
+select distinct Booking.passenger_id, booking_platform, seat_class, Booking.company_id,
+Booking.ticket_price,
+Payment.payment_method, Ticket.flight_id, Ticket.seat_no
+from Booking
+right join Payment
+on
+Booking.passenger_id = Payment.passenger_id
+right join Ticket
+on
+Ticket.passenger_id = Payment.passenger_id;
